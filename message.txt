@@ -1,0 +1,6 @@
+Er is een nieuwe update gevonden! 
+
+Update gevonden: ${NEW_UPDATE},
+
+
+
