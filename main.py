@@ -7,22 +7,12 @@ from string import Template
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-#Loads beers for je papa
 load_dotenv()
 
 #Set the link to fortinet rss feed:
 url = feedparser.parse("http://pub.kb.fortinet.com/rss/firmware.xml")
 entry = url.entries[1]
 entrystr = str(entry)
-
-#Set strings to check for
-fortios = "FortiOS"
-fortiweb = "FortiWeb"
-fortigate = "FortiGate"
-fortian = "FortiAnalyzer"
-fortimail = "FortiMail"
-fortisand = "FortiSandbox"
-fortisiem = "FortiDeceptor"
 
 #Credentials voor je mams
 aa = os.getenv("APELUL")
@@ -52,6 +42,7 @@ def get_contacts(filename):
             emails.append(a_contact.split()[1])
     return names, emails
 
+#set variables for sending mail
 names, emails = get_contacts('contacts.txt')  # read contacts
 message_template = read_template('message.txt') # read message
 title_template = "Nieuwe update: " + entry.title
@@ -69,7 +60,7 @@ def send_mail():
 		msg.attach(MIMEText(message, 'plain'))
 		s.send_message(msg)
 		del msg
-		
+
 #Niet aanraken geitenlul
 def check_update():
 	fortidict = ['FortiOS','FortiWeb','FortiGate','FortiAnalyzer','FortiMail','FortiSandbox','FortiSIEM']
