@@ -17,15 +17,20 @@ fortigate = "FortiGate"
 fortian = "FortiAnalyzer"
 fortimail = "FortiMail"
 fortisand = "FortiSandbox"
-fortisiem = "FortiSIEM"
+fortisiem = "FortiDeceptor"
 
-# fortidict = set('FortiOS','FortiWeb','FortiGate','FortiAnalyzer','FortiMail','FortiSandbox')
+latest_update = "" #Empty string to put latest update in
+
 aa = "email@email.com"
-pp = "password"
+pp = "Password"
 
 #Set outlook SMTP settings
 s = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
 
+def save_entries():
+	with open("latest.txt", "w") as myfile:
+		myfile.write(entry.title)
+# save_entries()
 #reads the template file
 def read_template(filename):
     with open(filename, 'r', encoding='utf-8') as template_file:
@@ -43,63 +48,32 @@ def get_contacts(filename):
     return names, emails
 
 names, emails = get_contacts('contacts.txt')  # read contacts
-message_template = read_template('message.txt')
+message_template = read_template('message.txt') # read message
+title_template = "Nieuwe update: " + entry.title
 
 def send_mail():
 	s.starttls()
 	s.login(aa, pp)
 	for name, email in zip(names, emails):
 		msg = MIMEMultipart()
-		message = message_template.substitute(NEW_UPDATE=entry.title,)
+		message = message_template.substitute(NEW_UPDATE=entry.title,DESCRIPT=entry.description)
 		msg['From']=aa
 		msg['To']=email
-		msg['Subject']="Test123"
+		msg['Subject']=title_template
 		msg.attach(MIMEText(message, 'plain'))
 		s.send_message(msg)
 		del msg
 
+def check_update():
+	with open("latest.txt") as myfile:
+		value = myfile.read()
+		value = value.replace("[]", "")
+		# print(value)
+		if entry.title == value:
+			print("Already found")
+		else:
+			send_mail()
+			save_entries()
+			print("mail send")
 
-if fortisiem in entry.title:
-	print("Found:", entry.title)	
-	send_mail()
-else: 
-	print("No update for FortiOS")
-
-if fortiweb in entry.title:
-	print("Found:", entry.title)
-	send_mail()
-else: 
-	print("No update for FortiWeb")
-
-if fortigate in entry.title:
-	print("Found:", entry.title)
-	send_mail()
-else: 
-	print("No update for FortiGate")
-
-if fortian in entry.title:
-	print("Found:", entry.title)
-	send_mail()
-else: 
-	print("No update for FortiAnalyzer")
-
-if fortimail in entry.title:
-	print("Found:", entry.title)
-	send_mail()
-else: 
-	print("No update for FortiMail")
-
-if fortisand in entry.title:
-	print("Found:", entry.title)
-	send_mail()
-else: 
-	print("No update for FortiSandbox")
-
-if fortisiem in entry.title:
-	print("Found:", entry.title)
-	print("Summary:", entry.summary)
-	send_mail()
-else: 
-	print("No update for FortiSIEM")
-
-
+check_update()
