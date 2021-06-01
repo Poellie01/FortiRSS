@@ -73,11 +73,10 @@ def check_update():
 			value = value.replace("[]", "")
 			# print(value)
 			if entry.title == value:
-				print("Already found")
+				return None
 			else:
 				send_mail()
 				save_entries()
-				print("mail send")
 	else:
 		print("No update found suitable for our needs, latest update: " + entry.title)
 	
